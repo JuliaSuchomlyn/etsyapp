@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "updateTags": "node updateTags.js"
+    "updateTags": "node updateTags.cjs"
   },
   "dependencies": {
     "dotenv": "^17.2.1",
@@ -17,7 +17,7 @@
     "openai": "^5.13.1"
   },
   "engines": {
-    "node": ">=12 <15"
+    "node": ">=22"
   },
   "license": "MIT"
 }

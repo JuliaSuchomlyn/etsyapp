@@ -138,6 +138,5 @@ async function runAll() {
 //run();
 runAll();
 
-module.exports = runAll;
-
+export default runAll;
 
