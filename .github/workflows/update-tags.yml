@@ -24,5 +24,33 @@ jobs:
       - name: Create credentials.json
         run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" | tr -d '\r' > credentials.json
 
+      - name: Test Google Sheets access
+        run: |
+          npm install googleapis
+          node -e "
+          import { google } from 'googleapis';
+          import fs from 'fs';
+
+          const auth = new google.auth.GoogleAuth({
+            keyFile: 'credentials.json',
+            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+          });
+
+          const sheets = google.sheets({ version: 'v4', auth });
+
+          const spreadsheetId = '1I4z67X3sQRrlYotiEuor_AXj--AmQg_GBL8aMASXmh8';
+          const range = 'Аркуш1!L2:M';
+
+          (async () => {
+            try {
+              const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
+              console.log('✅ Rows from sheet:', res.data.values.slice(0, 5));
+            } catch (e) {
+              console.error('❌ Error accessing sheet:', e.message);
+            }
+          })();
+          "
+
+
       - name: Run updateTags
         run: node runUpdate.js
