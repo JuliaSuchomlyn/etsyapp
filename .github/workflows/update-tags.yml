@@ -6,26 +6,21 @@ on:
   workflow_dispatch:      # можна запускати вручну
 
 jobs:
-  run:
+  update-tags:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: '22.x'
-          cache: 'npm'
+          node-version: 22
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Create credentials.json from secret
+        run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
 
       - name: Run updateTags
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GOOGLE_CLIENT_EMAIL: ${{ secrets.GOOGLE_CLIENT_EMAIL }}
-          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
-          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
         run: node updateTags.cjs
