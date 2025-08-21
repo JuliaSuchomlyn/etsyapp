@@ -1,10 +1,7 @@
-const runAll = (await import("./updateTags.js")).default;
-await runAll();
+const runAll = require("./updateTags.js").default; // підключаємо default export
 
-// updateTags.cjs
 (async () => {
   try {
-    const { runAll } = await import("./updateTags.js"); 
     await runAll();
     console.log("✅ Теги оновлені!");
   } catch (err) {
