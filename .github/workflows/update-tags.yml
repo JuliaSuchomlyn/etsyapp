@@ -22,8 +22,7 @@ jobs:
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
       - name: Create credentials.json
-        run: |
-          echo "${{ secrets.GSHEETS_CREDENTIALS }}" | tr -d '\r' > credentials.json
+        run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" | tr -d '\r' > credentials.json
 
       - name: Run updateTags
-        run: node updateTags.cjs
+        run: node runUpdate.js
