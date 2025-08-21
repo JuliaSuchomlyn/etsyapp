@@ -20,11 +20,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        working-directory: etsyapp
         run: npm ci
 
       - name: Run updateTags
-        working-directory: etsyapp
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GOOGLE_CLIENT_EMAIL: ${{ secrets.GOOGLE_CLIENT_EMAIL }}
