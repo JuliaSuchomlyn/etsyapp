@@ -1,20 +1,22 @@
-name: Update Etsy SEO Tags
+name: Update Etsy Tags
 
 on:
+  workflow_dispatch:   # можна запускати вручну
   schedule:
-    - cron: '0 4 1 * *'  # щомісяця о 04:00 UTC
-  workflow_dispatch:      # можна запускати вручну
+    - cron: '0 12 1 * *'  # автоматично щомісяця о 12:00 UTC
 
 jobs:
   update-tags:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install
@@ -22,9 +24,9 @@ jobs:
       - name: Set OpenAI API key
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
-
       - name: Create credentials.json from secret
-        run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
+        run: |
+          echo "${{ secrets.GSHEETS_CREDENTIALS }}" | sed 's/\\n/\n/g' > credentials.json
 
-      - name: Run updateTags
+      - name: Run updateTags script
         run: node updateTags.cjs
