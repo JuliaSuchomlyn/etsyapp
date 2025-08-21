@@ -1,3 +1,4 @@
-import runAll from "./updateTags.js";
+const runAll = require("./updateTags.js").default; // якщо експортуєш через export default
+
 
 runAll();
