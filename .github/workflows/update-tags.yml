@@ -19,6 +19,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set OpenAI API key
+        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+
+
       - name: Create credentials.json from secret
         run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
 
