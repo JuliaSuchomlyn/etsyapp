@@ -1,3 +1,6 @@
+const runAll = (await import("./updateTags.js")).default;
+await runAll();
+
 // updateTags.cjs
 (async () => {
   try {
