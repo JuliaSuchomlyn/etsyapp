@@ -14,10 +14,6 @@ const openai = new OpenAI({
 });
 
 // --- Google Sheets setup ---
-if (!process.env.GSHEETS_CREDENTIALS) {
-  console.error("❌ GSHEETS_CREDENTIALS not set!");
-  process.exit(1);
-}
 
 const auth = new google.auth.GoogleAuth({
   keyFile: 'credentials.json',
