@@ -20,8 +20,8 @@ if (!process.env.GSHEETS_CREDENTIALS) {
 }
 
 const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GSHEETS_CREDENTIALS),
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+  keyFile: 'credentials.json',
+  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
 });
 
 const sheets = google.sheets({ version: "v4", auth });

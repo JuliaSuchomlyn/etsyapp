@@ -21,8 +21,11 @@ jobs:
       - name: Set OpenAI API key
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
-      - name: Set GSHEETS_CREDENTIALS
-        run: echo "GSHEETS_CREDENTIALS=${{ secrets.GSHEETS_CREDENTIALS }}" >> $GITHUB_ENV
+      - name: Create credentials.json
+        run: |
+          printf "%b" "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
+
+
 
 
       - name: Run updateTags
