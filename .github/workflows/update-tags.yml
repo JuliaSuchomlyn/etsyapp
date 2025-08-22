@@ -23,15 +23,16 @@ jobs:
 
       - name: Create credentials.json
         run: |
-            printf "%b" "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
+          echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
 
+      - name: Debug credentials.json
+        run: cat credentials.json
 
       - name: Test Google Sheets access
         run: |
           npm install googleapis
           node -e "
           import { google } from 'googleapis';
-          import fs from 'fs';
 
           const auth = new google.auth.GoogleAuth({
             keyFile: 'credentials.json',
