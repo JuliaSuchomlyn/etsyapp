@@ -9,7 +9,7 @@ const openai = new OpenAI({
 });
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: "credentials.json",
+  credentials: JSON.parse(process.env.GSHEETS_CREDENTIALS),
   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
 });
 
