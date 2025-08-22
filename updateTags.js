@@ -40,7 +40,13 @@ async function optimizeWithGPT(tags) {
     messages: [{ role: "user", content: prompt }],
   });
 
+  console.log("🔎 GPT response:", response.choices[0].message);
+
   let text = response.choices[0].message.content.replace(/```/g, "").trim();
+
+  if (!text) {
+  throw new Error("❌ GPT не повернув контент");
+}
 
   try {
     const parsed = JSON.parse(text);
