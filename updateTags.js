@@ -1,18 +1,24 @@
 import { google } from "googleapis";
 import OpenAI from "openai";
 import "dotenv/config";
+import fs from "fs";
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// --- Sleep helper ---
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // --- OpenAI setup ---
 if (!process.env.OPENAI_API_KEY) {
   console.error("❌ OPENAI_API_KEY not set!");
   process.exit(1);
 }
-
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // --- Google Sheets setup ---
+if (!fs.existsSync("credentials.json")) {
+  console.error("❌ credentials.json not found!");
+  process.exit(1);
+}
+
 const auth = new google.auth.GoogleAuth({
   keyFile: "credentials.json",
   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
@@ -26,7 +32,7 @@ const range = "Аркуш1!L2:M";
 const fetchTags = async () => {
   const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
   const rows = res.data.values || [];
-  return rows.map(row => ({
+  return rows.map((row) => ({
     longTags: row[0]?.split(",") || [],
     shortTags: row[1]?.split(",") || [],
   }));
@@ -44,20 +50,30 @@ async function optimizeWithGPT(tags) {
 
   console.log("💬 Sending prompt to OpenAI:", prompt);
 
+  let response;
   try {
-    const response = await openai.chat.completions.create({
+    response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
     });
+  } catch (err) {
+    console.error("❌ OpenAI request failed:", err);
+    return { longTags: [], shortTags: [] };
+  }
 
-    const text = response.choices?.[0]?.message?.content;
-    if (!text) throw new Error("GPT returned undefined");
+  const text = response.choices?.[0]?.message?.content;
+  if (!text) {
+    console.error("❌ GPT returned undefined!");
+    return { longTags: [], shortTags: [] };
+  }
 
-    const cleanText = text.replace(/```/g, "").trim();
+  const cleanText = text.replace(/```/g, "").trim();
+
+  try {
     const parsed = JSON.parse(cleanText);
     return { longTags: parsed.longTags || [], shortTags: parsed.shortTags || [] };
-  } catch (err) {
-    console.error("❌ GPT request failed:", err);
+  } catch (e) {
+    console.error("❌ Failed to parse JSON from GPT:", cleanText);
     return { longTags: [], shortTags: [] };
   }
 }
@@ -77,4 +93,15 @@ export default async function runAll() {
     const listing = listings[i];
     console.log(`\n🔹 Processing listing ${i + 1}...`);
     const optimized = await optimizeWithGPT([...listing.longTags, ...listing.shortTags]);
-    console.log("✨ LongT
+    console.log(`✨ LongTags: ${optimized.longTags}`);
+    console.log(`✨ ShortTags: ${optimized.shortTags}`);
+    await fakeUpdateListing(i + 1, optimized);
+  }
+
+  console.log("\n✅ All listings processed.");
+}
+
+// --- Auto-run if called directly ---
+if (import.meta.url === `file://${process.argv[1]}`) {
+  runAll();
+}
