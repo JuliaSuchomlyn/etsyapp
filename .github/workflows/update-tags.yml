@@ -22,7 +22,7 @@ jobs:
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
       - name: Create credentials.json
-        run: printf "%s" "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
+        run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
 
 
       - name: Test Google Sheets access
