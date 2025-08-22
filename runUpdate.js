@@ -1,2 +1,3 @@
 import runAll from "./updateTags.js";
-runAll();
+
+await runAll();

@@ -23,10 +23,7 @@ jobs:
 
       - name: Create credentials.json
         run: |
-          printf "%b" "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
-
-
-
+          echo "${{ secrets.GSHEETS_CREDENTIALS }}" | sed 's/\\n/\n/g' > credentials.json
 
       - name: Run updateTags
-        run: node updateTags.cjs
+        run: node runUpdate.js

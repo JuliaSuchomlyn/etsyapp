@@ -9,15 +9,13 @@ if (!process.env.OPENAI_API_KEY) {
   console.error("❌ OPENAI_API_KEY not set!");
   process.exit(1);
 }
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // --- Google Sheets setup ---
-
 const auth = new google.auth.GoogleAuth({
-  keyFile: 'credentials.json',
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+  keyFile: "credentials.json",
+  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
 });
 
 const sheets = google.sheets({ version: "v4", auth });
@@ -46,32 +44,20 @@ async function optimizeWithGPT(tags) {
 
   console.log("💬 Sending prompt to OpenAI:", prompt);
 
-  let response;
   try {
-    response = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
     });
-  } catch (err) {
-    console.error("❌ OpenAI request failed:", err);
-    return { longTags: [], shortTags: [] };
-  }
 
-  console.log("💬 GPT raw response object:", response);
+    const text = response.choices?.[0]?.message?.content;
+    if (!text) throw new Error("GPT returned undefined");
 
-  const text = response.choices?.[0]?.message?.content;
-  if (!text) {
-    console.error("❌ GPT returned undefined!");
-    return { longTags: [], shortTags: [] };
-  }
-
-  let cleanText = text.replace(/```/g, "").trim();
-
-  try {
+    const cleanText = text.replace(/```/g, "").trim();
     const parsed = JSON.parse(cleanText);
     return { longTags: parsed.longTags || [], shortTags: parsed.shortTags || [] };
-  } catch (e) {
-    console.error("❌ Failed to parse JSON from GPT:", cleanText);
+  } catch (err) {
+    console.error("❌ GPT request failed:", err);
     return { longTags: [], shortTags: [] };
   }
 }
@@ -91,15 +77,4 @@ export default async function runAll() {
     const listing = listings[i];
     console.log(`\n🔹 Processing listing ${i + 1}...`);
     const optimized = await optimizeWithGPT([...listing.longTags, ...listing.shortTags]);
-    console.log("✨ LongTags:", optimized.longTags);
-    console.log("✨ ShortTags:", optimized.shortTags);
-    await fakeUpdateListing(i + 1, optimized);
-  }
-
-  console.log("\n✅ All listings processed.");
-}
-
-// --- Auto-run if called directly ---
-if (require.main === module) {
-  runAll();
-}
+    console.log("✨ LongT
