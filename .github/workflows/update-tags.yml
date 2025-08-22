@@ -18,19 +18,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Set environment variables
-        run: |
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-          echo "GSHEETS_CREDENTIALS=${{ secrets.GSHEETS_CREDENTIALS }}" >> $GITHUB_ENV
+      - name: Set OpenAI API key
+        run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
       - name: Create credentials.json
-        run: |
-          echo "$GSHEETS_CREDENTIALS" | sed 's/\\n/\n/g' > credentials.json
+        run: printf "%s" "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
 
       - name: Test Google Sheets access
         run: |
+          npm install googleapis
           node -e "
           import { google } from 'googleapis';
+          import fs from 'fs';
 
           const auth = new google.auth.GoogleAuth({
             keyFile: 'credentials.json',
@@ -45,7 +44,7 @@ jobs:
           (async () => {
             try {
               const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
-              console.log('✅ Rows from sheet:', res.data.values?.slice(0, 5) || []);
+              console.log('✅ Rows from sheet:', res.data.values?.slice(0, 5));
             } catch (e) {
               console.error('❌ Error accessing sheet:', e.message);
               process.exit(1);
