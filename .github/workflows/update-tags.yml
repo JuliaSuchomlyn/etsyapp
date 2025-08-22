@@ -22,38 +22,7 @@ jobs:
         run: echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
 
       - name: Create credentials.json
-        run: |
-          echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
-
-      - name: Debug credentials.json
-        run: cat credentials.json
-
-      - name: Test Google Sheets access
-        run: |
-          npm install googleapis
-          node -e "
-          import { google } from 'googleapis';
-
-          const auth = new google.auth.GoogleAuth({
-            keyFile: 'credentials.json',
-            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-          });
-
-          const sheets = google.sheets({ version: 'v4', auth });
-
-          const spreadsheetId = '1I4z67X3sQRrlYotiEuor_AXj--AmQg_GBL8aMASXmh8';
-          const range = 'Аркуш1!L2:M';
-
-          (async () => {
-            try {
-              const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
-              console.log('✅ Rows from sheet:', res.data.values?.slice(0, 5));
-            } catch (e) {
-              console.error('❌ Error accessing sheet:', e.message);
-              process.exit(1);
-            }
-          })();
-          "
+        run: echo "${{ secrets.GSHEETS_CREDENTIALS }}" > credentials.json
 
       - name: Run updateTags
         run: node runUpdate.js
