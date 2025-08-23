@@ -1,19 +1,29 @@
 {
   "name": "etsyapp",
-  "version": "0.0.1",
-  "main": "server.js",
+  "version": "1.0.0",
   "type": "module",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "updateTags": "node runUpdate.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuliaSuchomlyn/etsyapp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuliaSuchomlyn/etsyapp/issues"
+  },
+  "homepage": "https://github.com/JuliaSuchomlyn/etsyapp#readme",
   "dependencies": {
     "dotenv": "^17.2.1",
-    "express": "4.x",
-    "googleapis": "^156.0.0",
-    "openai": "^5.13.1"
-  },
-  "engines": {
-    "node": ">=22"
+    "express": "^5.1.0",
+    "googleapis": "^157.0.0",
+    "hbs": "^4.2.0",
+    "node-fetch": "^3.3.2",
+    "openai": "^5.15.0"
   }
 }
