@@ -1,7 +1,11 @@
-export const updateListing = async (listing) => {
-  const replaceChars = ["∙", "•", "✨", "⋆", "✦", "✧", "❋", "✾"];
+const replaceChars = ["∙", "•", "✨", "⋆", "✦", "✧", "❋", "✾"];
+const regex = /—|[∙•✨⋆✦✧❋✾]/;
+
+/**
+ * Оновлює один лістинг: замінює або додає символи у title
+ */
+const updateSingleListing = (listing) => {
   let title = listing.title;
-  const regex = /—|[∙•✨⋆✦✧❋✾]/;
 
   if (regex.test(title)) {
     title = title.replace(regex, () => replaceChars[Math.floor(Math.random() * replaceChars.length)]);
@@ -9,7 +13,16 @@ export const updateListing = async (listing) => {
     title += " " + replaceChars[Math.floor(Math.random() * replaceChars.length)];
   }
 
-  console.log(`[${new Date().toLocaleTimeString()}] Лістинг ${listing.listing_id} оновлено: ${title}`);
+  return {
+    listing_id: listing.listing_id,
+    title,
+    // сюди можна додавати інші поля для Etsy: description, tags, price тощо
+  };
+};
 
-  // Тут можна підключити PUT-запит до Etsy, коли ключ буде активний
+/**
+ * Оновлює масив лістингів і повертає новий масив для Etsy
+ */
+export const updateListing = async (listings) => {
+  return listings.map(updateSingleListing);
 };
