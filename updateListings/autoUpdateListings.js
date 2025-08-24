@@ -1,13 +1,24 @@
-import { fetchListingsTest } from "./fetchListings.js";
+// autoUpdateListings.js
+import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
 import { updateListing } from "./updateListing.js";
 
+/**
+ * Запускає оновлення всіх лістингів
+ */
 export const autoUpdateAllListings = async () => {
-  const listings = await fetchListingsTest(); // або fetchListings()
-  for (const listing of listings) {
-    await updateListing(listing);
-  }
+  const listings = await fetchListingsFromSheets();
+  const updatedListings = await updateListing(listings);
+
+  console.log("Оновлені лістинги для Etsy:", updatedListings);
+
+  return updatedListings; // якщо потрібно далі використовувати
 };
 
-// Якщо хочеш автоповтор кожні 24 години
-const intervalMinutes = 60 * 24;
-setInterval(autoUpdateAllListings, intervalMinutes * 60 * 1000);
+/**
+ * Автозапуск кожні N хвилин
+ * (для тесту можна поставити невелике значення, наприклад 1 хв)
+ */
+export const startAutoUpdate = (intervalMinutes = 1440) => { // 1440 хв = 24 години
+  autoUpdateAllListings(); // одразу виконуємо один раз
+  setInterval(autoUpdateAllListings, intervalMinutes * 60 * 1000);
+};

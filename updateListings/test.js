@@ -1,10 +1,7 @@
-import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
-import { updateListing } from "./updateListing.js";
+import { autoUpdateAllListings, startAutoUpdate } from "./autoUpdateListings.js";
 
-(async () => {
-  const listings = await fetchListingsFromSheets();
-  console.log("Отримані лістинги з Google Sheets:", listings);
+// Просто один раз для тесту:
+await autoUpdateAllListings();
 
-  const updatedListings = await updateListing(listings);
-  console.log("Оновлені лістинги для Etsy:", updatedListings);
-})();
+// Або запустити автоповтор кожні 5 хвилин для тесту:
+startAutoUpdate(1);
