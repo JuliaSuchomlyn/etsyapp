@@ -26,7 +26,7 @@ const client = new google.auth.JWT({
 
 // ID таблиці та діапазон
 const SPREADSHEET_ID = "1I4z67X3sQRrlYotiEuor_AXj--AmQg_GBL8aMASXmh8";
-const RANGE = "Аркуш1!J2:J";
+const RANGE = "Аркуш1!J2:M";
 
 export const fetchListingsFromSheets = async () => {
   try {
@@ -43,6 +43,9 @@ export const fetchListingsFromSheets = async () => {
     return rows.map((row, index) => ({
       listing_id: index + 1,
       title: row[0],
+      description: row[1] || "",
+      LongTags: row[2] ? row[2].split(",") : [],   // L: LongTags (12-та колонка, індекс 11)
+      ShortTags: row[3] ? row[3].split(",") : [], // M: ShortTags (13-та колонка, індекс 12)
     }));
   } catch (err) {
     console.error("Помилка при отриманні даних з Google Sheets:", err);

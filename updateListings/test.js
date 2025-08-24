@@ -1,4 +1,5 @@
-import { startAutoUpdate } from "./autoUpdateListings.js";
+import { startAutoUpdateTitles, startAutoUpdateTags } from "./autoUpdateListings.js";
 
-// Запуск з інтервалом 1 хв для локального тесту
-startAutoUpdate(1);
+// Тестовий запуск
+startAutoUpdateTitles(1); // кожну хвилину для локального тесту
+startAutoUpdateTags(0.0013889); // тестовий інтервал для тегів (наприклад, ~15 хв)

@@ -1,24 +1,25 @@
 import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
 import { updateTitles } from "./updateTitles.js";
+import { updateTags } from "./updateTags.js";
 
 // Фейкова відправка на Etsy для тесту
 const fakeEtsyPush = async (listing) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log(`✅ Лістинг ${listing.listing_id} успішно оновлено: ${listing.title}`);
+      //console.log(`✅ Лістинг ${listing.listing_id} успішно оновлено`);
       resolve(listing);
-    }, 200); // пауза 200ms
+    }, 200);
   });
 };
 
 /**
- * Основне оновлення всіх лістингів
+ * Автооновлення тайтлів
  */
 export const autoUpdateTitles = async () => {
   const listings = await fetchListingsFromSheets();
   const updatedListings = await updateTitles(listings);
 
-  console.log("Оновлені лістинги:", updatedListings);
+  console.log("Оновлені тайтли:", updatedListings);
 
   // Відправка пакетами по 5 лістингів
   const batchSize = 5;
@@ -29,13 +30,32 @@ export const autoUpdateTitles = async () => {
 };
 
 /**
- * Автоповтор оновлення
- * @param {number} intervalMinutes - інтервал у хвилинах
+ * Автоповтор оновлення тайтлів
  */
-export const startAutoUpdate = (intervalMinutes = 1440) => {
-  // Одноразово одразу
-  autoUpdateTitles();
-
-  // Потім кожні intervalMinutes
+export const startAutoUpdateTitles = (intervalMinutes = 1440) => {
+  autoUpdateTitles(); // одразу
   setInterval(autoUpdateTitles, intervalMinutes * 60 * 1000);
+};
+
+/**
+ * Автооновлення тегів
+ */
+export const autoUpdateTags = async () => {
+  const updatedListings = await updateTags();
+
+  console.log("Оновлені теги:", updatedListings);
+
+  const batchSize = 5; // або інший розмір пакетів
+  for (let i = 0; i < updatedListings.length; i += batchSize) {
+    const batch = updatedListings.slice(i, i + batchSize);
+    await Promise.all(batch.map(fakeEtsyPush));
+  }
+};
+
+/**
+ * Автоповтор оновлення тегів
+ */
+export const startAutoUpdateTags = (intervalDays = 14) => {
+  autoUpdateTags(); // одразу
+  setInterval(autoUpdateTags, intervalDays * 24 * 60 * 60 * 1000);
 };
