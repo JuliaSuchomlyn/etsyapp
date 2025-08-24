@@ -1,3 +1,3 @@
-import { autoUpdateAllListings } from "./updateListings/index.js";
+import { autoUpdateAllListings } from "./updateTitless/index.js";
 
 autoUpdateAllListings();

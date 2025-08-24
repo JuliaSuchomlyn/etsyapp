@@ -1,5 +1,5 @@
 import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
-import { updateListing } from "./updateListing.js";
+import { updateTitles } from "./updateTitles.js";
 
 // Фейкова відправка на Etsy для тесту
 const fakeEtsyPush = async (listing) => {
@@ -14,9 +14,9 @@ const fakeEtsyPush = async (listing) => {
 /**
  * Основне оновлення всіх лістингів
  */
-export const autoUpdateListings = async () => {
+export const autoUpdateTitles = async () => {
   const listings = await fetchListingsFromSheets();
-  const updatedListings = await updateListing(listings);
+  const updatedListings = await updateTitles(listings);
 
   console.log("Оновлені лістинги:", updatedListings);
 
@@ -34,8 +34,8 @@ export const autoUpdateListings = async () => {
  */
 export const startAutoUpdate = (intervalMinutes = 1440) => {
   // Одноразово одразу
-  autoUpdateListings();
+  autoUpdateTitles();
 
   // Потім кожні intervalMinutes
-  setInterval(autoUpdateListings, intervalMinutes * 60 * 1000);
+  setInterval(autoUpdateTitles, intervalMinutes * 60 * 1000);
 };
