@@ -1,24 +1,41 @@
-// autoUpdateListings.js
 import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
 import { updateListing } from "./updateListing.js";
 
-/**
- * Запускає оновлення всіх лістингів
- */
-export const autoUpdateAllListings = async () => {
-  const listings = await fetchListingsFromSheets();
-  const updatedListings = await updateListing(listings);
-
-  console.log("Оновлені лістинги для Etsy:", updatedListings);
-
-  return updatedListings; // якщо потрібно далі використовувати
+// Фейкова відправка на Etsy для тесту
+const fakeEtsyPush = async (listing) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`✅ Лістинг ${listing.listing_id} успішно оновлено: ${listing.title}`);
+      resolve(listing);
+    }, 200); // пауза 200ms
+  });
 };
 
 /**
- * Автозапуск кожні N хвилин
- * (для тесту можна поставити невелике значення, наприклад 1 хв)
+ * Основне оновлення всіх лістингів
  */
-export const startAutoUpdate = (intervalMinutes = 1440) => { // 1440 хв = 24 години
-  autoUpdateAllListings(); // одразу виконуємо один раз
-  setInterval(autoUpdateAllListings, intervalMinutes * 60 * 1000);
+export const autoUpdateListings = async () => {
+  const listings = await fetchListingsFromSheets();
+  const updatedListings = await updateListing(listings);
+
+  console.log("Оновлені лістинги:", updatedListings);
+
+  // Відправка пакетами по 5 лістингів
+  const batchSize = 5;
+  for (let i = 0; i < updatedListings.length; i += batchSize) {
+    const batch = updatedListings.slice(i, i + batchSize);
+    await Promise.all(batch.map(fakeEtsyPush));
+  }
+};
+
+/**
+ * Автоповтор оновлення
+ * @param {number} intervalMinutes - інтервал у хвилинах
+ */
+export const startAutoUpdate = (intervalMinutes = 1440) => {
+  // Одноразово одразу
+  autoUpdateListings();
+
+  // Потім кожні intervalMinutes
+  setInterval(autoUpdateListings, intervalMinutes * 60 * 1000);
 };

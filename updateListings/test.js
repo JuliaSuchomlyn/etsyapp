@@ -1,7 +1,4 @@
-import { autoUpdateAllListings, startAutoUpdate } from "./autoUpdateListings.js";
+import { startAutoUpdate } from "./autoUpdateListings.js";
 
-// Просто один раз для тесту:
-await autoUpdateAllListings();
-
-// Або запустити автоповтор кожні 5 хвилин для тесту:
+// Запуск з інтервалом 1 хв для локального тесту
 startAutoUpdate(1);
