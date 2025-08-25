@@ -1,6 +1,4 @@
-import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
-import { updateTitles } from "./updateTitles.js";
-import { updateTags } from "./updateTags.js";
+import { fetchListingsFromSheets, updateTitles, updateTags } from '../modules.js';
 
 // Фейкова відправка на Etsy для тесту
 const fakeEtsyPush = async (listing) => {

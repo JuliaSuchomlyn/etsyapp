@@ -2,12 +2,11 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import OpenAI from "openai";
-import { fetchListingsFromSheets } from "./fetchListingsFromSheets.js";
+import { fetchListingsFromSheets } from "../modules.js";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.join(__dirname, "../secrets/.env") });
+dotenv.config({ path: path.resolve(process.cwd(), "secrets/.env") });
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -48,7 +47,10 @@ Return ONLY JSON in this format:
     content = content.replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(content);
 
-    return { ...listing, LongTags: parsed.LongTags, ShortTags: parsed.ShortTags };
+    return { 
+      ...listing, 
+      LongTags: parsed.LongTags.map(tag => tag.trim()), 
+      ShortTags: parsed.ShortTags.map(tag => tag.trim()) };
 
   } catch (err) {
     console.error("Error parsing AI response for listing", listing.listing_id, err);
@@ -57,7 +59,7 @@ Return ONLY JSON in this format:
 };
 
 // функція оновлення всіх лістингів пакетами
-export const updateTags = async (batchSize = 5, delayMs = 1000) => {
+export default async function updateTags (batchSize = 5, delayMs = 1000) {
   const listings = await fetchListingsFromSheets(); // отримуємо всі дані з таблиці
   const updatedListings = [];
 

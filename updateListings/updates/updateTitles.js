@@ -15,7 +15,7 @@ const updateSingleListing = (listing) => {
 
   return {
     listing_id: listing.listing_id,
-    title,
+    title: title.trim(),
     // сюди можна додавати інші поля для Etsy: description, tags, price тощо
   };
 };
@@ -23,6 +23,6 @@ const updateSingleListing = (listing) => {
 /**
  * Оновлює масив лістингів і повертає новий масив для Etsy
  */
-export const updateTitles = async (listings) => {
+export default async function updateTitles (listings) {
   return listings.map(updateSingleListing);
 };
