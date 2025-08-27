@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 
 // Абсолютний шлях до цього файлу
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Шлях до credentials.json
 const CREDENTIALS_PATH = path.resolve(process.cwd(), "secrets/credentials.json");

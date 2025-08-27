@@ -2,4 +2,4 @@ import { startAutoUpdateTitles, startAutoUpdateTags } from './updateListings/mod
 
 // Тестовий запуск
 startAutoUpdateTitles(1); // кожну хвилину для локального тесту
-startAutoUpdateTags(0.0013889); // приблизно 2 секунди для тесту
+//startAutoUpdateTags(0.0013889); // приблизно 2 секунди для тесту
